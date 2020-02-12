@@ -224,7 +224,7 @@ void TitleScreen() {
     cout << endl;
     cout << "-----------------------------------------------------\n";
     cout << "-----------------------------------------------------\n";
-    cout << "   ----------   G P A    CALCULATOR   ----------      \n";    
+    cout << "   ----------   G P A    CALCULATOR   ----------     \n";    
     cout << "-----------------------------------------------------\n";
     cout << "-----------------------------------------------------\n\n\n";
 
@@ -241,7 +241,6 @@ char GradeGenerator(double score) {
 
   // Specification C3 - Letter Grades
 
-  double points = score;
   char grade = 'A';
 
   if (score < D_MIN) {
