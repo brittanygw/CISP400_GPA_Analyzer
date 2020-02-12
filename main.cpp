@@ -19,18 +19,24 @@ using namespace std;
   const double D_MIN = 60; 
 // end global variables
 
+//-----------------------------------------------
+//               Class Declarations
+//-----------------------------------------------
+
+// Class below stores information about user entered grades
 class Grades
 {
   public:
-  int length = 0;
-  double * array;
+  int length = 0;  // Length of array (needed to compute average & add values)
+  double * array;  // Points to array of grades
 
   double average = 0.0;
-  double returnAverage(double arr[], int size);
+  double returnAverage(double arr[], int size); // Returns average of array
   
-  ~Grades() { delete[] array; };
+  ~Grades() { delete[] array; array = NULL; }; // Deletes array at end of program
 };
 
+// Class below stores session information 
 class User 
 {
     public:
@@ -100,6 +106,7 @@ double Grades::returnAverage(double *arr, int size) {
 
     void DisplayGrades(string name, string number, double arr[], int length);
     //  Displays all grades entered
+    //  Display formatted and includes user name and school ID #
 
     void DisplayAverage(double average, char letter);
     
@@ -112,19 +119,23 @@ double Grades::returnAverage(double *arr, int size) {
 int main() {
 	ProgramGreeting();	
 	Unittest();		
-    TitleScreen();
+  TitleScreen();
 
     User newUser;	
     Grades userGrades;
 
+    // Set user name and user ID
     newUser.setUserName(newUser.getUserName());
     newUser.setUserID(newUser.getUserID());
 
     cout << "How many grades would you like to enter?\n";
     cin >> userGrades.length;
+    // Length used to initiate array below
 
-    userGrades.array = new double[userGrades.length];
+  // Specification B1 - Dynamic Array
+   userGrades.array = new double[userGrades.length];
  
+  // Loop repeats to add all initial grades to array
     for (int i=0; i < userGrades.length; i++) {
         cout << "Please enter grade #" << i+1 << ":\n";
         cin >> userGrades.array[i];
@@ -132,22 +143,64 @@ int main() {
 
     cout << "Grades accepted.\n";
 
+    // Loop below continues until user decides to end program
+    // Selecting quit will change flag to 0
     while (newUser.sessionFlag == 1) {
       
+      // Take user input below 
       newUser.userChoice = OptionMenu();
 
-      if (newUser.userChoice == 2) {
-        DisplayGrades(newUser.userName, newUser.userID, userGrades.array, userGrades.length);
-      }
+        // User selects option 1, "Add Grade"
+        if (newUser.userChoice == 1) {
 
-      if (newUser.userChoice == 3) {
-         DisplayAverage(userGrades.returnAverage(userGrades.array, userGrades.length), GradeGenerator(userGrades.returnAverage(userGrades.array, userGrades.length)));
-      }
+          // Specification B2 - Add Elements
+          // Length is increased by one, and a new array is created with that length
+          userGrades.length++;
+          double * holderArr;
+          holderArr = new double[userGrades.length];
 
-      if (newUser.userChoice == 4) {
-        cout << "Goodbye.";
-        newUser.sessionFlag = 0;
-      }
+          // Old array information is transferred to new array
+          for (int i = 0; i < userGrades.length; ++i) {
+            holderArr[i] = userGrades.array[i];
+          }
+
+          // Final element is assigned w/ the new grade
+          cout << "Enter new grade: \n";
+          cin >> holderArr[userGrades.length-1];
+
+          // Original array is deleted, 
+          delete[] userGrades.array;
+
+          // and then recreated, using the new length
+          userGrades.array = new double[userGrades.length];
+
+          // Saved array elements are transferred back to original array
+          for (int i = 0; i < userGrades.length; ++i) {
+            userGrades.array[i] = holderArr[i];
+          }
+
+          // Placeholder array is deleted so it can be reused if
+          //    new elements are added 
+          delete[]holderArr;
+          holderArr = NULL;
+
+        }
+
+        // User selects option 2, "Display All Grades"
+        if (newUser.userChoice == 2) {
+          DisplayGrades(newUser.userName, newUser.userID, userGrades.array, userGrades.length);
+        }
+
+        // User selects option 3, "Calculate Average"
+        if (newUser.userChoice == 3) {
+          DisplayAverage(userGrades.returnAverage(userGrades.array, userGrades.length), GradeGenerator(userGrades.returnAverage(userGrades.array, userGrades.length)));
+        }
+
+        // User selects option 4, "Quit Program"
+        if (newUser.userChoice == 4) {
+          cout << "Goodbye.";
+          newUser.sessionFlag = 0;
+        }
 
     }
 
@@ -186,6 +239,8 @@ char GradeGenerator(double score) {
   // Function can take scores > 100
   //   and scores them "A". 
 
+  // Specification C3 - Letter Grades
+
   double points = score;
   char grade = 'A';
 
@@ -211,10 +266,11 @@ int OptionMenu() {
   cout << "1. Add Grade" << endl;
   cout << "2. Display All Grades" << endl;
   cout << "3. Calculate Average" << endl;
-  cout << "4. Quit\n" << endl;
+  cout << "4. Quit Program\n" << endl;
 
   cin >> playerChoice;
 
+  // Specification B3 - Menu Input Validation
   while (playerChoice > 4 || playerChoice < 1) {
     cout << "Please enter a valid selection from the menu.\n";
     cin >> playerChoice;
@@ -225,6 +281,7 @@ int OptionMenu() {
 
 void DisplayGrades(string name, string number, double arr[], int length) {
 
+  // Specification C2 - Print Scores
   cout << name << endl;
   cout << "(" << number << ")" << endl;
   cout << "SEMESTER GRADES\n";
@@ -232,12 +289,14 @@ void DisplayGrades(string name, string number, double arr[], int length) {
 
     for (int i=0; i < length; i++) {
       cout << (i+1) << ". ";
+      // Spefification B4 - Print Leter Grade
       cout << arr[i] << "\t\t(" << GradeGenerator(arr[i]) << ") \n";
     } 
 }
 
 void DisplayAverage(double average, char letter) {
 
+  // Specification C4 - Compute GPA
   cout << "Your grade average is " << average << " (" << letter << ").\n";
 
 }
