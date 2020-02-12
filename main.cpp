@@ -288,7 +288,7 @@ void DisplayGrades(string name, string number, double arr[], int length) {
 
     for (int i=0; i < length; i++) {
       cout << (i+1) << ". ";
-      // Spefification B4 - Print Leter Grade
+      // Specification B4 - Print Leter Grade
       cout << arr[i] << "\t\t(" << GradeGenerator(arr[i]) << ") \n";
     } 
 }
